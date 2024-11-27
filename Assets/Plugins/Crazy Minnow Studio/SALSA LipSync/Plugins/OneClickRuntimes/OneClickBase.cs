@@ -9,6 +9,23 @@ namespace CrazyMinnow.SALSA.OneClicks
 	{
 		/// <summary>
 		/// RELEASE NOTES:
+		///		2.7.2:
+		///			~ Override available for DoOneClickiness() to allow for legacy AudioClip parameter.
+		///			~ Remove code which instantiates the QueueProcessor. Instead, the QP is now added and linked
+		///				as the last step in the OneClickEditor script. This resolves a very fringe case where
+		///				jittery animations, particularly with SALSA, occur when there is a conflicting external
+		///				influence on animated components.
+		///			~ AudioSource configuration is now called from OneClickEditor scripts and is not automatically
+		///				run with SALSA configuration via DoOneClickiness() or Eyes.
+		///			~ QueueProcessor configuration is now called from OneClickEditor scripts and is not automatically
+		///				run with SALSA configuration via DoOneClickiness() or Eyes.
+		///
+		///			PACKAGE INCLUDES:
+		///				OneClickBase.cs
+		///				OneClickComponent.cs
+		///				OneClickConfiguration.cs
+		///				OneClickExpression.cs
+		/// 
 		///		2.7.1:
 		///			+ Better support for custom AudioSource settings: will not create AudioSource
 		///				automagically when an AudioClip is not passed to Base. It assumes an AudioSource
@@ -239,12 +256,13 @@ namespace CrazyMinnow.SALSA.OneClicks
 
 		protected static void DoOneClickiness(GameObject go, AudioClip clip)
 		{
+			DoOneClickiness(go);
+			Debug.LogWarning("OneClickBase no longer accepts an AudioClip as a parameter for DoOneClickiness(). Please upgrade your OneClick to the latest version. Attempting to pass your AudioClip to the new Base functionality. NOTE: this may not meet your requirements.");
+			ConfigureSalsaAudioSource(go, clip, true);
+		}
+		protected static void DoOneClickiness(GameObject go)
+		{
 			selectedObject = go;
-
-			// setup QueueProcessor
-			var qp = selectedObject.GetComponent<QueueProcessor>(); // get QueueProcessor on current object -- we no longer look in-scene.
-			if (qp == null)
-				qp = selectedObject.AddComponent<QueueProcessor>();
 
 			// if there is a uepProxy, get reference to it.
 			uepProxy = go.GetComponent<UmaUepProxy>();
@@ -253,18 +271,18 @@ namespace CrazyMinnow.SALSA.OneClicks
 			{
 				if (!FindSkinnedMeshRenderers(configuration)) return;
 
-				// module-specific configuraiton requirements::
+				// module-specific configuration requirements::
 				switch (configuration.type)
 				{
 					#region salsa-specific setup
 					case OneClickConfiguration.ConfigType.Salsa:
-						ConfigureSalsaSettings(clip, qp);
+						ConfigureSalsaSettings();
 						break;
 					#endregion
 
 					#region emoter-specific setup
 					case OneClickConfiguration.ConfigType.Emoter:
-						ConfigEmoterSettings(qp);
+						ConfigEmoterSettings();
 						break;
 					#endregion
 				}
@@ -313,7 +331,7 @@ namespace CrazyMinnow.SALSA.OneClicks
 			return true;
 		}
 
-		private static void ConfigEmoterSettings(QueueProcessor qp)
+		private static void ConfigEmoterSettings()
 		{
 			emoter = selectedObject.GetComponent<Emoter>();
 			if (emoter == null)
@@ -321,8 +339,6 @@ namespace CrazyMinnow.SALSA.OneClicks
 
 			if (salsa != null)
 				salsa.emoter = emoter;
-
-			emoter.queueProcessor = qp;
 
 			emoter.lipsyncEmphasisChance = emphasisChance;
 			emoter.useRandomEmotes = useRandomEmotes;
@@ -340,37 +356,11 @@ namespace CrazyMinnow.SALSA.OneClicks
 			emoter.emotes.Clear();
 		}
 
-		private static void ConfigureSalsaSettings(AudioClip clip, QueueProcessor qp)
+		private static void ConfigureSalsaSettings()
 		{
-			bool useAudioSource = false;
-			
-			if (clip)
-				useAudioSource = true;
-
 			salsa = selectedObject.GetComponent<Salsa>();
 			if (salsa == null)
 				salsa = selectedObject.AddComponent<Salsa>();
-
-			if (useAudioSource)
-			{
-				// configure AudioSource for demonstration
-				var audSrc = selectedObject.GetComponent<AudioSource>();
-				if (audSrc == null && useAudioSource)
-					audSrc = selectedObject.AddComponent<AudioSource>();
-				audSrc.playOnAwake = true;
-				audSrc.loop = false;
-				if (clip != null && audSrc.clip == null)
-					audSrc.clip = clip;
-				salsa.audioSrc = audSrc;
-			}
-			else
-			{
-				Debug.Log("Per the applied OneClick, an AudioSource is not used, SALSA has been set to use External Analysis."+
-				          "\nSALSA may require further configuration for proper operation -- ensure SALSA is receiving ExternalAnalysis.");
-				salsa.useExternalAnalysis = true;
-			}
-			
-			salsa.queueProcessor = qp;
 
 			// adjust salsa settings
 			//	- data analysis settings
@@ -390,6 +380,50 @@ namespace CrazyMinnow.SALSA.OneClicks
 			salsa.emphasizerTrigger = emphasizerTrigger;
 
 			salsa.visemes.Clear();
+		}
+
+		public static void ConfigureSalsaAudioSource(GameObject go, AudioClip audioClip, bool useAudioSource)
+		{
+			var salsaInstance = go.GetComponent<Salsa>();
+			if (salsaInstance)
+			{
+				if (useAudioSource)
+				{
+					// configure AudioSource for demonstration
+					var audioSource = selectedObject.GetComponent<AudioSource>();
+					var createNewAudioSource = audioSource == null && useAudioSource;
+					if (createNewAudioSource)
+					{
+						audioSource = selectedObject.AddComponent<AudioSource>();
+						audioSource.clip = audioClip;
+						audioSource.playOnAwake = true;
+						audioSource.loop = true;
+					}
+
+					salsaInstance.useExternalAnalysis = false;
+					salsaInstance.audioSrc = audioSource;
+				}
+				else
+				{
+					Debug.Log("Per the applied OneClick, an AudioSource is not used, SALSA has been set to use External Analysis." +
+					          "\nSALSA may require further configuration for proper operation -- ensure SALSA is receiving ExternalAnalysis.");
+					salsaInstance.useExternalAnalysis = true;
+				}
+			}
+			else
+				Debug.Log("SALSA instance not found. AudioSource was not configured.");
+		}
+		public static void AddQueueProcessor(GameObject go)
+		{
+			var qp = go.GetComponent<QueueProcessor>();
+			if (qp) DestroyImmediate(qp);
+			qp = go.AddComponent<QueueProcessor>();
+			var salsa = go.GetComponent<Salsa>();
+			if (salsa) salsa.queueProcessor = qp;
+			var emoter = go.GetComponent<Emoter>();
+			if (emoter) emoter.queueProcessor = qp;
+			var eyes = go.GetComponent<Eyes>();
+			if (eyes) eyes.queueProcessor = qp;
 		}
 
 		protected static void Init()
