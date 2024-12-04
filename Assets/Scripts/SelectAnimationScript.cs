@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CrazyMinnow.SALSA;
 
 public class SelectAnimationScript : MonoBehaviour
 {
-    public Animator animator; 
+    public Emoter emoter;
+    public Animator animator;
+
     public void OnRetrieveAnimation(string animationRetrieve)
     {
-        switch (animationRetrieve) {
+        switch (animationRetrieve)
+        {
             case "Talking_0":
                 animator.SetTrigger("ButtonPress");
                 break;
@@ -33,5 +37,10 @@ public class SelectAnimationScript : MonoBehaviour
                 animator.SetTrigger("hasAngry");
                 break;
         }
+    }
+
+    public void ReatrieveEmote(string emote)
+    {
+        emoter.ManualEmote(emote, ExpressionComponent.ExpressionHandler.RoundTrip);
     }
 }
