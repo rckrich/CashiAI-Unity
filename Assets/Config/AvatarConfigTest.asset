@@ -67,8 +67,9 @@ MonoBehaviour:
   - viseme_O
   - mouthSmile
   - mouthOpen
-  - Oculus Visemes
+  - ARKit
   - viseme_RR
   - viseme_nn
   - viseme_CH
   - viseme_PP
+  - ARKit

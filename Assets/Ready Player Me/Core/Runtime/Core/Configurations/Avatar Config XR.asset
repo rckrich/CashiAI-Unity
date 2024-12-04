@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Avatar Config XR
   m_EditorClassIdentifier: 
   Lod: 0
-  Pose: 1
+  Pose: 0
   TextureAtlas: 0
   TextureSizeLimit: 1024
   TextureChannel: 0000000001000000020000000300000004000000
@@ -32,5 +32,43 @@ MonoBehaviour:
     PropertyName: 
   - TextureChannel: 4
     PropertyName: 
+  ShaderPropertyMapping:
+  - SourceProperty: baseColorTexture
+    TargetProperty: _MainTex
+    Type: 0
+  - SourceProperty: normalTexture
+    TargetProperty: _BumpMap
+    Type: 0
+  - SourceProperty: metallicRoughnessTexture
+    TargetProperty: 
+    Type: 0
+  - SourceProperty: metallicFactor
+    TargetProperty: metallicFactor
+    Type: 1
+  - SourceProperty: roughnessFactor
+    TargetProperty: 
+    Type: 1
+  - SourceProperty: emissiveTexture
+    TargetProperty: emissiveTexture
+    Type: 0
+  - SourceProperty: emissiveFactor
+    TargetProperty: emissiveFactor
+    Type: 2
+  - SourceProperty: occlusionTexture
+    TargetProperty: occlusionTexture
+    Type: 0
+  - SourceProperty: occlusionTexture_strength
+    TargetProperty: 
+    Type: 1
   MorphTargets:
   - ARKit
+  - eyeBlinkLeft
+  - eyeBlinkRight
+  - viseme_E
+  - viseme_O
+  - mouthSmile
+  - mouthOpen
+  - viseme_RR
+  - viseme_nn
+  - viseme_CH
+  - viseme_PP
