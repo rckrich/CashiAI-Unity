@@ -13,14 +13,17 @@ public class SelectAnimationScript : MonoBehaviour
         switch (animationRetrieve)
         {
             case "Talking_0":
-                animator.SetTrigger("ButtonPress");
+                animator.SetTrigger("Talking_0");
                 break;
             case "Talking_1":
+                animator.SetTrigger("Talking_1");
                 break;
             case "Talking_2":
+                animator.SetTrigger("Talking_2");
                 break;
             case "Crying":
                 animator.SetTrigger("hasCrying");
+                emoter.ManualEmote("sad", ExpressionComponent.ExpressionHandler.RoundTrip);
                 break;
             case "Laughing":
                 animator.SetTrigger("hasLaughing");
