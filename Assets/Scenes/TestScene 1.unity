@@ -2364,16 +2364,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7052381655546298154}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: SetTrigger
+      - m_Target: {fileID: 5810548273017625048}
+        m_TargetAssemblyTypeName: SelectAnimationScript, Assembly-CSharp
+        m_MethodName: ReatrieveEmote
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ButtonPress
+          m_StringArgument: angry
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1104616431
@@ -7232,6 +7232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb9719dc4e0e344bbf956cd089f2302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emoter: {fileID: 5810548273017625053}
   animator: {fileID: 5810548273017625057}
 --- !u!82 &5810548273017625049
 AudioSource:
@@ -10888,7 +10889,7 @@ MonoBehaviour:
         textures: []
         materialRenderer: {fileID: 0}
         materials: []
-      inspFoldout: 0
+      inspFoldout: 1
       previewDisplayMode: 0
       collectionExpand: 0
     isRandomEmote: 0
@@ -11615,7 +11616,7 @@ MonoBehaviour:
         textures: []
         materialRenderer: {fileID: 0}
         materials: []
-      inspFoldout: 0
+      inspFoldout: 1
       previewDisplayMode: 0
       collectionExpand: 0
     isRandomEmote: 0
@@ -11628,7 +11629,7 @@ MonoBehaviour:
     isAlwaysEmphasisEmote: 0
     hasBeenFired: 0
     frac: 1
-  useRandomEmotes: 0
+  useRandomEmotes: 1
   isChancePerEmote: 1
   numRandomEmotesPerCycle: 0
   numRandomEmphasizersPerCycle: 4
@@ -14412,6 +14413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb9719dc4e0e344bbf956cd089f2302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  emoter: {fileID: 0}
   animator: {fileID: 7052381655546298154}
 --- !u!4 &7586797302814899871 stripped
 Transform:
