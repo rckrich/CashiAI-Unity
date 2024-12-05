@@ -9,7 +9,7 @@ using System;
 
 
 
-public class OpenAiManager : MonoBehaviour
+public class OpenAiWebCalls : MonoBehaviour
 {
 
     [System.Serializable]
@@ -54,10 +54,15 @@ public class OpenAiManager : MonoBehaviour
         public string id;
     }
 
+     [SerializeField] private ChatBoxLogic chat;
+
     private string open_ai_key = "";
     private string assistant_id = "";
-    private string activeThread = "";
-    private List<Message> messageList = new List<Message>();
+
+
+    //Debug
+    public string activeThread = "";
+    public List<Message> messageList = new List<Message>();
 
     private IEnumerator CreateNewThread()
     {
@@ -237,10 +242,9 @@ public class OpenAiManager : MonoBehaviour
     private void SetMessageList(List<Message> messages)
     {
         messageList = messages;
+        chat.ChatEntryPointMessages(messageList[messageList.Count]);
         Debug.Log("Messages set: " + messages.Count);
     }
-
-
 
     public void CreateNewThreadInterface(){
         StartCoroutine(CreateNewThread());
