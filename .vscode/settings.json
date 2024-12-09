@@ -51,5 +51,10 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "CashiAI-Unity.sln"
+    "dotnet.defaultSolution": "CashiAI-Unity.sln",
+    "cSpell.words": [
+        "Behaviour",
+        "Rebuilder",
+        "UGUI"
+    ]
 }

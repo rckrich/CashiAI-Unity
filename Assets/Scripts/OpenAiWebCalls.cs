@@ -23,9 +23,36 @@ public class OpenAiWebCalls : MonoBehaviour
     {
         public string id;
         public string role;
-        public string content;
+        public content[] content;
         public string created_at;
         
+    }
+
+    [System.Serializable]
+    public class content
+    {
+        public text text;
+    }
+
+    [System.Serializable]
+    public class text
+    {
+        public String value;
+        public object[] annotations;
+    }
+
+    [Serializable]
+    public class chatData
+    {
+        public string text;
+        public string facialExpression;
+        public string animation;
+    }
+
+    [System.Serializable]
+    public class value
+    {
+        public string messageValue;
     }
 
     [System.Serializable]
@@ -57,9 +84,9 @@ public class OpenAiWebCalls : MonoBehaviour
      [SerializeField] private ChatBoxLogic chat;
 
     private string open_ai_key = "";
-    private string assistant_id = "";
+    private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
 
-
+    public List<chatData> _test;
     //Debug
     public string activeThread = "";
     public List<Message> messageList = new List<Message>();
@@ -242,7 +269,12 @@ public class OpenAiWebCalls : MonoBehaviour
     private void SetMessageList(List<Message> messages)
     {
         messageList = messages;
-        chat.ChatEntryPointMessages(messageList[messageList.Count]);
+        string textHandler;
+        textHandler = messageList[messageList.Count-1].content[0].text.value;
+        //chatData extractedData = JsonUtility.FromJson<chatData>(textHandler);
+        //print(extractedData);
+        //_test.Add(extractedData);
+        chat.ChatEntryPointMessages(messageList[messageList.Count-1]);
         Debug.Log("Messages set: " + messages.Count);
     }
 
