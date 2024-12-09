@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3cdec3d396ccb4547b6a972bb2f1c14d
+guid: 08eadb658e5d6ae4083cda36e97d9165
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -9,7 +9,7 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
   editorImportSettings:
-    generateSecondaryUVSet: 1
+    generateSecondaryUVSet: 0
   importSettings:
     nodeNameMethod: 1
     animationMethod: 2
