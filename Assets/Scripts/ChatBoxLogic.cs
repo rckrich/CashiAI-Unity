@@ -27,6 +27,7 @@ public class ChatBoxLogic : MonoBehaviour
         suggestionBox.HideSuggestionBox();
         openAi.SendMessageToThreadInterface(textInput.text);
         CreateUserMessage(textInput.text);
+        textInput.text = "";
     }
 
     private void CreateUserMessage(string messageUser){
@@ -45,11 +46,11 @@ public class ChatBoxLogic : MonoBehaviour
         CreateUserMessage(text);
     }
 
-    public void ChatEntryPointMessages(OpenAiWebCalls.Message _newMessage){
+    public void ChatEntryPointMessages(String _newMessage){
         GameObject _prefab;
         _prefab = Instantiate(messageAssistantPrefab);
         _prefab.transform.SetParent(messageContainer.transform);
-        _prefab.GetComponent<TextInterface>().textUI.text = _newMessage.content[0].text.value;
+        _prefab.GetComponent<TextInterface>().textUI.text = _newMessage;
         _prefab.transform.localScale = new Vector3(1,1,1);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_prefab.GetComponent<RectTransform>());
         LayoutRebuilder.ForceRebuildLayoutImmediate(messageContainer.GetComponent<RectTransform>());

@@ -5,12 +5,34 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System;
-
+using System.IO;
 
 
 
 public class OpenAiWebCalls : MonoBehaviour
 {
+
+    [System.Serializable]
+    public class Dialogue
+    {
+        public string text;
+        public string facialExpression;
+        public string animation;
+    }
+
+    [System.Serializable]
+    public class DialogueList
+    {
+        public Dialogue[] dialogues;
+    }
+
+    [System.Serializable]
+    private class SpeechPayload
+    {
+        public string model;
+        public string input;
+        public string voice;
+    }
 
     [System.Serializable]
     private class MessageResponse
@@ -236,7 +258,7 @@ public class OpenAiWebCalls : MonoBehaviour
 
     private IEnumerator FetchMessages()
     {
-        string url = $"https://api.openai.com/v1/threads/{activeThread}/messages?limit=100";
+        string url = $"https://api.openai.com/v1/threads/{activeThread}/messages?limit=20";
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.SetRequestHeader("Authorization", $"Bearer {open_ai_key}");
@@ -257,7 +279,7 @@ public class OpenAiWebCalls : MonoBehaviour
                 List<Message> messages = new List<Message>(response.data);
                 messages.Reverse(); 
 
-                SetMessageList(messages);
+                StartCoroutine(ProcessMessages(messages));
             }
         }
         else
@@ -266,16 +288,44 @@ public class OpenAiWebCalls : MonoBehaviour
         }
     }
 
-    private void SetMessageList(List<Message> messages)
+    private IEnumerator TextToSpeech(string speechText)
     {
+        UnityWebRequest request = new UnityWebRequest("https://api.openai.com/v1/audio/speech", "POST");
+
+        request.SetRequestHeader("Authorization", $"Bearer {open_ai_key}");
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        string jsonBody = JsonUtility.ToJson(new SpeechPayload
+        {
+            model = "tts-1",
+            input = speechText,
+            voice = "alloy"
+        });
+
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+
+        request.downloadHandler = new DownloadHandlerFile(Path.Combine(Application.persistentDataPath, "speech.mp3"));
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.mp3"));
+        }
+        else
+        {
+            Debug.LogError("Error al generar el audio: " + request.error);
+        }
+    }
+
+    IEnumerator ProcessMessages(List<Message> messages){
         messageList = messages;
-        string textHandler;
-        textHandler = messageList[messageList.Count-1].content[0].text.value;
-        //chatData extractedData = JsonUtility.FromJson<chatData>(textHandler);
-        //print(extractedData);
-        //_test.Add(extractedData);
-        chat.ChatEntryPointMessages(messageList[messageList.Count-1]);
-        Debug.Log("Messages set: " + messages.Count);
+
+        Dialogue textProcessed = ProcessJson(messageList[messageList.Count-1].content[0].text.value);
+        yield return StartCoroutine(TextToSpeech(textProcessed.text));
+        chat.ChatEntryPointMessages(textProcessed.text);
+
     }
 
     public void CreateNewThreadInterface(){
@@ -293,7 +343,14 @@ public class OpenAiWebCalls : MonoBehaviour
         return messageList;
     }
 
-    
+    private Dialogue ProcessJson(string jsonToProcess){
+        jsonToProcess = jsonToProcess.Trim();
+        string[] Process1= jsonToProcess.Split("```");
+        string[] Process2= Process1[1].Split("json");
+
+        Dialogue[] dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + Process2[1] + "}").dialogues;
+        return dialogues[0];
+    }
 
 }
 
