@@ -305,14 +305,14 @@ public class OpenAiWebCalls : MonoBehaviour
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
 
-        request.downloadHandler = new DownloadHandlerFile(Path.Combine(Application.persistentDataPath, "speech.wav"));
+        request.downloadHandler = new DownloadHandlerFile(Path.Combine(Application.persistentDataPath, "speech.mp3"));
 
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.wav"));
-            StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.wav")));
+            Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.mp3"));
+            StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.mp3")));
             //AudioPlay(Path.Combine(Application.persistentDataPath, "speech.wav"));
         }
         else
@@ -374,26 +374,24 @@ public class OpenAiWebCalls : MonoBehaviour
      }*/
     private IEnumerator LoadAudio(string audiopath)
     {
-        
         string pathWithPrefix = "file://" + audiopath;
         print("Audio path: " + pathWithPrefix);
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(pathWithPrefix, AudioType.WAV))
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(pathWithPrefix, AudioType.UNKNOWN))
         {
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
             {
-                print("Entro en el if");
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
-                print("clip creado");
                 audioSource.clip = clip;
                 audioSource.Play();
             }
             else
             {
-                Debug.LogError($"Error al cargar el audio: {www.error}");
+                Debug.LogError($"Error al cargar el audio desde {audiopath}: {www.error}");
             }
         }
     }
 }
+
 
