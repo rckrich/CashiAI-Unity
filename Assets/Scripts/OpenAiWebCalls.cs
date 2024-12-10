@@ -107,7 +107,7 @@ public class OpenAiWebCalls : MonoBehaviour
 
     private string open_ai_key = "";
     private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
-
+    public AudioSource audioSource;
     public List<chatData> _test;
     //Debug
     public string activeThread = "";
@@ -305,13 +305,15 @@ public class OpenAiWebCalls : MonoBehaviour
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
 
-        request.downloadHandler = new DownloadHandlerFile(Path.Combine(Application.persistentDataPath, "speech.mp3"));
+        request.downloadHandler = new DownloadHandlerFile(Path.Combine(Application.persistentDataPath, "speech.wav"));
 
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.mp3"));
+            Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.wav"));
+            StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.wav")));
+            //AudioPlay(Path.Combine(Application.persistentDataPath, "speech.wav"));
         }
         else
         {
@@ -352,5 +354,46 @@ public class OpenAiWebCalls : MonoBehaviour
         return dialogues[0];
     }
 
+    /* IEnumerator LoadAudio(string filepath)
+     {
+         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, AudioType.MPEG))
+         {
+             yield return www.SendWebRequest();
+             if (www.result == UnityWebRequest.Result.Success)
+             {
+                 Debug.LogError("Entro aquí");
+                 AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+                 audioSource.clip = audioClip;
+                 audioSource.Play();
+             }
+             else
+             {
+                 Debug.LogError($"Error al cargar el audio: {www.error}");
+             }
+         }
+     }*/
+    private IEnumerator LoadAudio(string audiopath)
+    {
+        
+        string pathWithPrefix = "file://" + audiopath;
+        print("Audio path: " + pathWithPrefix);
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(pathWithPrefix, AudioType.WAV))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                print("Entro en el if");
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+                print("clip creado");
+                audioSource.clip = clip;
+                audioSource.Play();
+            }
+            else
+            {
+                Debug.LogError($"Error al cargar el audio: {www.error}");
+            }
+        }
+    }
 }
 
