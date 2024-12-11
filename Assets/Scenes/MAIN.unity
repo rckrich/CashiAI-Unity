@@ -4389,7 +4389,7 @@ GameObject:
   - component: {fileID: 1090143726}
   - component: {fileID: 1090143725}
   m_Layer: 5
-  m_Name: White
+  m_Name: _White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6431,10 +6431,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1da5c20b54a38b499ac25034fb28fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  suggestionsItem:
-  - {fileID: 176489940}
-  - {fileID: 1386267429}
-  - {fileID: 1418284787}
+  suggestionsItemList: []
+  suggestionItemPrefab: {fileID: 0}
   chatBox: {fileID: 1542552970}
 --- !u!114 &1979730454
 MonoBehaviour:

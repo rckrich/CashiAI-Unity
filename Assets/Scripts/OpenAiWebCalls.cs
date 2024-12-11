@@ -108,6 +108,7 @@ public class OpenAiWebCalls : MonoBehaviour
     private string open_ai_key = "";
     private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
     public AudioSource audioSource;
+    private AudioClip currentClip;
     public List<chatData> _test;
     public string activeThread = "";
     public SelectAnimationScript selectAnimationScript;
@@ -299,7 +300,7 @@ public class OpenAiWebCalls : MonoBehaviour
         {
             model = "tts-1",
             input = speechText,
-            voice = "alloy"
+            voice = "onyx"
         });
 
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
@@ -312,8 +313,7 @@ public class OpenAiWebCalls : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.mp3"));
-            SelectAnimation();
-            StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.mp3")));
+            yield return StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.mp3")));
             
         }
         else
@@ -325,10 +325,36 @@ public class OpenAiWebCalls : MonoBehaviour
     IEnumerator ProcessMessages(List<Message> messages){
         messageList = messages;
 
-        Dialogue textProcessed = ProcessJson(messageList[messageList.Count-1].content[0].text.value);
-        yield return StartCoroutine(TextToSpeech(textProcessed.text));
-        chat.ChatEntryPointMessages(textProcessed.text);
+        Dialogue[] textProcessed = ProcessJson(messageList[messageList.Count-1].content[0].text.value);
+        if (textProcessed.Length == 1){
+            yield return StartCoroutine(TextToSpeech(textProcessed[0].text));
+            chat.ChatEntryPointMessages(textProcessed[0].text);
+            selectAnimationScript.OnRetrieveAnimation(textProcessed[0].animation);
+            selectAnimationScript.ReatrieveEmote(textProcessed[0].facialExpression);
+        }else{
+            for (int i = 0; i < textProcessed.Length; i++)
+            {
+                Debug.Log(i);
+                yield return StartCoroutine(TextToSpeech(textProcessed[i].text));
+                chat.ChatEntryPointMessages(textProcessed[i].text);
+                selectAnimationScript.OnRetrieveAnimation(textProcessed[i].animation);
+                selectAnimationScript.ReatrieveEmote(textProcessed[i].facialExpression);
+                Debug.Log(currentClip.length);
+                yield return new WaitForSeconds(currentClip.length);
+            }
+        }
 
+
+    }
+
+    IEnumerator isAudioPlaying(){
+        while(true){
+            if(!audioSource.isPlaying){
+                break;
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return null;
     }
 
     public void CreateNewThreadInterface(){
@@ -346,20 +372,17 @@ public class OpenAiWebCalls : MonoBehaviour
         return messageList;
     }
 
-    private Dialogue ProcessJson(string jsonToProcess){
+    private Dialogue[] ProcessJson(string jsonToProcess){
         jsonToProcess = jsonToProcess.Trim();
-        string[] Process1= jsonToProcess.Split("```");
-        string[] Process2= Process1[1].Split("json");
-
-        Dialogue[] dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + Process2[1] + "}").dialogues;
-        return dialogues[0];
-    }
-
-    public void SelectAnimation()
-    {
-        Dialogue textProcessed = ProcessJson(messageList[messageList.Count - 1].content[0].text.value);
-        selectAnimationScript.OnRetrieveAnimation(textProcessed.animation);
-        selectAnimationScript.ReatrieveEmote(textProcessed.facialExpression);
+        Dialogue[] dialogues ;
+        try{
+            string[] Process1= jsonToProcess.Split("```");
+            string[] Process2= Process1[1].Split("json");
+            dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + Process2[1] + "}").dialogues;
+        }catch{
+            dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + jsonToProcess + "}").dialogues;
+        }
+        return dialogues;
     }
 
     private IEnumerator LoadAudio(string audiopath)
@@ -372,9 +395,11 @@ public class OpenAiWebCalls : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.Success)
             {
-                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
-                audioSource.clip = clip;
+                currentClip = DownloadHandlerAudioClip.GetContent(www);
+                audioSource.clip = currentClip;
                 audioSource.Play();
+
+                
             }
             else
             {

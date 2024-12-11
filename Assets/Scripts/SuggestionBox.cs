@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class SuggestionBox : MonoBehaviour
 {
-    public List<GameObject> suggestionsItem;
+    public List<GameObject> suggestionsItemList;
+    public GameObject suggestionItemPrefab;
     public ChatBoxLogic chatBox;
     public void OnClick_SetQuestion(TextMeshProUGUI textUI){
         chatBox.SuggestionBoxEntryPointSend(textUI.text);
@@ -19,7 +20,8 @@ public class SuggestionBox : MonoBehaviour
     }
 
     public void Initialize(){
-        foreach (GameObject item in suggestionsItem)
+
+        foreach (GameObject item in suggestionsItemList)
         {
             item.GetComponent<TextInterface>().textUI.text = "";
         }
