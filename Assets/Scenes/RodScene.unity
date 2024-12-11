@@ -5219,6 +5219,7 @@ MonoBehaviour:
   audioSource: {fileID: 2109638308}
   _test: []
   activeThread: 
+  selectAnimationScript: {fileID: 2109638307}
   messageList: []
 --- !u!1 &1504342874
 GameObject:
@@ -11739,7 +11740,7 @@ MonoBehaviour:
         emoteControlType: 0
         eyesControlType: 1
         durationDelay: 0
-        durationOn: 0.25
+        durationOn: 1
         durationHold: 0.1
         durationOff: 0.2
         isSmoothDisable: 0
@@ -11750,7 +11751,7 @@ MonoBehaviour:
         isAnimatorControlled: 0
         useOffset: 0
         useOffsetFollow: 1
-        inspFoldout: 0
+        inspFoldout: 1
         enabled: 1
         isBonePreviewUpdated: 0
         frac: 1
@@ -11761,7 +11762,7 @@ MonoBehaviour:
         emoteControlType: 0
         eyesControlType: 1
         durationDelay: 0
-        durationOn: 0.25
+        durationOn: 1
         durationHold: 0.1
         durationOff: 0.2
         isSmoothDisable: 0
@@ -11772,7 +11773,7 @@ MonoBehaviour:
         isAnimatorControlled: 0
         useOffset: 0
         useOffsetFollow: 1
-        inspFoldout: 0
+        inspFoldout: 1
         enabled: 1
         isBonePreviewUpdated: 0
         frac: 1
@@ -11783,7 +11784,7 @@ MonoBehaviour:
         emoteControlType: 0
         eyesControlType: 1
         durationDelay: 0
-        durationOn: 0.25
+        durationOn: 1
         durationHold: 0.1
         durationOff: 0.2
         isSmoothDisable: 0
@@ -12112,7 +12113,7 @@ MonoBehaviour:
         textures: []
         materialRenderer: {fileID: 0}
         materials: []
-      inspFoldout: 0
+      inspFoldout: 1
       previewDisplayMode: 0
       collectionExpand: 0
     isRandomEmote: 0
@@ -12537,7 +12538,7 @@ MonoBehaviour:
   inspSalsaLinked: 1
   inspStateFoldoutProcessing: 0
   inspStateFoldoutSettings: 0
-  inspStateFoldoutEmotes: 0
+  inspStateFoldoutEmotes: 1
   inspCollectionDisplayMode: 0
 --- !u!114 &2109638313
 MonoBehaviour:

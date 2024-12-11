@@ -109,8 +109,8 @@ public class OpenAiWebCalls : MonoBehaviour
     private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
     public AudioSource audioSource;
     public List<chatData> _test;
-    //Debug
     public string activeThread = "";
+    public SelectAnimationScript selectAnimationScript;
     public List<Message> messageList = new List<Message>();
 
     private IEnumerator CreateNewThread()
@@ -312,8 +312,9 @@ public class OpenAiWebCalls : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Audio generado con éxito. Archivo guardado en: " + Path.Combine(Application.persistentDataPath, "speech.mp3"));
+            SelectAnimation();
             StartCoroutine(LoadAudio(Path.Combine(Application.persistentDataPath, "speech.mp3")));
-            //AudioPlay(Path.Combine(Application.persistentDataPath, "speech.wav"));
+            
         }
         else
         {
@@ -354,24 +355,13 @@ public class OpenAiWebCalls : MonoBehaviour
         return dialogues[0];
     }
 
-    /* IEnumerator LoadAudio(string filepath)
-     {
-         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, AudioType.MPEG))
-         {
-             yield return www.SendWebRequest();
-             if (www.result == UnityWebRequest.Result.Success)
-             {
-                 Debug.LogError("Entro aquí");
-                 AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
-                 audioSource.clip = audioClip;
-                 audioSource.Play();
-             }
-             else
-             {
-                 Debug.LogError($"Error al cargar el audio: {www.error}");
-             }
-         }
-     }*/
+    public void SelectAnimation()
+    {
+        Dialogue textProcessed = ProcessJson(messageList[messageList.Count - 1].content[0].text.value);
+        selectAnimationScript.OnRetrieveAnimation(textProcessed.animation);
+        selectAnimationScript.ReatrieveEmote(textProcessed.facialExpression);
+    }
+
     private IEnumerator LoadAudio(string audiopath)
     {
         string pathWithPrefix = "file://" + audiopath;
