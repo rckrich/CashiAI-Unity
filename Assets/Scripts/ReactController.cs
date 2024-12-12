@@ -14,7 +14,6 @@ public class ReactController : MonoBehaviour
 
     void Start(){
         CommunicateToReact();
-        AdjustSize(1);
     }
 
     public void AdjustSize(int num){
