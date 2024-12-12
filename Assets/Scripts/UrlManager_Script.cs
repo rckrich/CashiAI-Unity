@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UrlManager_Script : MonoBehaviour
 {
-    GameObject urlPrefab;
+    public GameObject urlPrefab;
     public Transform instanceParent;
 
     private (string name, string url)[] urlData = {
