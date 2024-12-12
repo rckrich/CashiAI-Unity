@@ -12,13 +12,17 @@ public class UrlManager_Script : MonoBehaviour
         ("Unity", "https://unity.com"),
         ("OpenAI", "https://openai.com")
     };
-    
+    void Start()
+    {
+        Instance();
+    }
     private void Instance()
     {
         foreach (var data in urlData) { 
             GameObject instance = Instantiate(urlPrefab, instanceParent);
             PF_URL_Script urlScript = instance.GetComponent<PF_URL_Script>();
-            if (urlScript != null) { 
+            if (urlScript != null) {
+                urlScript.urlNameText.text = data.name;
                 urlScript.urlName = data.name;
                 urlScript.url = data.url;
                 instance.name = "Url:" + data.name;
