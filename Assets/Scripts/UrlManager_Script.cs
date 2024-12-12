@@ -12,6 +12,7 @@ public class UrlManager_Script : MonoBehaviour
         ("Unity", "https://unity.com"),
         ("OpenAI", "https://openai.com")
     };
+
     void Start()
     {
         Instance();
