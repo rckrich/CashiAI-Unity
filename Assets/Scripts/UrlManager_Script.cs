@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
+public class UrlData
+{
+    public string name;
+    public string url;
+}
 public class UrlManager_Script : MonoBehaviour
 {
     public GameObject urlPrefab;
     public Transform instanceParent;
 
-    private (string name, string url)[] urlData = {
-        ("Google", "https://www.google.com"),
-        ("Unity", "https://unity.com"),
-        ("OpenAI", "https://openai.com")
+    [SerializeField]
+    private UrlData[] urlData = {
+        new UrlData { name = "Google", url = "https://www.google.com" },
+        new UrlData { name = "Unity", url = "https://unity.com" },
+        new UrlData { name = "OpenAI", url = "https://openai.com" }
     };
+
     void Start()
     {
         Instance();
