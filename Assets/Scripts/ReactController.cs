@@ -9,11 +9,23 @@ public class ReactController : MonoBehaviour
     [DllImport("__Internal")]
   private static extern void isLoadedF ();
 
-    public RectTransform chatContainer;
-    public RectTransform suggestionBox;
+    [SerializeField] private WebCalls webInterface;
+    [SerializeField] private RectTransform chatContainer;
+    [SerializeField] private RectTransform suggestionBox;
+    private string userId = "";
 
     void Start(){
         CommunicateToReact();
+    }
+
+    public void reactWebCall(string id){
+        userId = id;
+    }
+
+    public void sendPost(){
+        if(userId == ""){
+            webInterface.PostConversationStarted(userId);
+        }
     }
 
     public void AdjustSize(int num){

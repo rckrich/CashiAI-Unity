@@ -11,7 +11,8 @@ public class ChatBoxLogic : MonoBehaviour
     [SerializeField] private TMP_InputField textInput;
     [SerializeField] private OpenAiWebCalls openAi;
     [SerializeField] private SuggestionBox suggestionBox;
-
+    [SerializeField] private ReactController reactController;
+    private bool hasSendFirstMessage = false;
 
     public void Initialize(){
         openAi.CreateNewThreadInterface();
@@ -28,6 +29,10 @@ public class ChatBoxLogic : MonoBehaviour
         openAi.SendMessageToThreadInterface(textInput.text);
         CreateUserMessage(textInput.text);
         textInput.text = "";
+        if(!hasSendFirstMessage){
+            reactController.sendPost();
+            hasSendFirstMessage = true;
+        }
     }
 
     private void CreateUserMessage(string messageUser){
@@ -44,6 +49,10 @@ public class ChatBoxLogic : MonoBehaviour
     public void SuggestionBoxEntryPointSend(string text){
         openAi.SendMessageToThreadInterface(text);
         CreateUserMessage(text);
+        if(!hasSendFirstMessage){
+            reactController.sendPost();
+            hasSendFirstMessage = true;
+        }
     }
 
     public void ChatEntryPointMessages(String _newMessage){

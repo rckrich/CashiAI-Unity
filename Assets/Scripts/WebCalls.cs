@@ -8,7 +8,9 @@ using System;
 
 public class WebCalls : MonoBehaviour
 {
-    public static IEnumerator CR_GetDefaultMessages()
+    public SuggestionBox suggestionBox;
+    public DefaultMessageRoot jsonProcessed;
+    private IEnumerator CR_GetDefaultMessages()
     {
         string jsonResult = "";
         string url = "http://165.232.151.217/api/v1/default-messages";
@@ -19,6 +21,7 @@ public class WebCalls : MonoBehaviour
             if(webRequest.result == UnityWebRequest.Result.ProtocolError || webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
                 Debug.Log("Protocol Error or Connection Error");
+                suggestionBox.HideSuggestionBox();
                 yield break;
             }
             else
@@ -26,13 +29,24 @@ public class WebCalls : MonoBehaviour
                 if (webRequest.isDone)
                 {
                     jsonResult = webRequest.downloadHandler.text;
+                    jsonProcessed = JsonUtility.FromJson<DefaultMessageRoot>(jsonResult);
+                    suggestionBox.EntryPointInitializeItemList(jsonProcessed);
                     Debug.Log("Default message: " + jsonResult);
                 }
             }
         }
     }
 
-    public static IEnumerator CR_PostConversationStarted(string id)
+    void Start()
+    {
+        StartCoroutine(CR_GetDefaultMessages());
+    }
+
+    public void PostConversationStarted(string id){
+        StartCoroutine(CR_PostConversationStarted(id));
+    }
+
+    private IEnumerator CR_PostConversationStarted(string id)
     {
         string jsonResult = "";
         string url = "http://165.232.151.217/api/v1/conversations/started";

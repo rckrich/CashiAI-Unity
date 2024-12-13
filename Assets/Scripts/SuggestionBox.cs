@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class SuggestionBox : MonoBehaviour
 {
-    public List<GameObject> suggestionsItemList;
-    public GameObject suggestionItemPrefab;
-    public ChatBoxLogic chatBox;
+    [SerializeField] private GameObject suggestionItemPrefab;
+    [SerializeField] private ChatBoxLogic chatBox;
+
     public void OnClick_SetQuestion(TextMeshProUGUI textUI){
         chatBox.SuggestionBoxEntryPointSend(textUI.text);
         HideSuggestionBox();
@@ -19,11 +19,18 @@ public class SuggestionBox : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Initialize(){
-
-        foreach (GameObject item in suggestionsItemList)
+    public void EntryPointInitializeItemList(DefaultMessageRoot _json){
+        Debug.Log(_json);
+        foreach (DefaultMessage item in _json.defaultMessages)
         {
-            item.GetComponent<TextInterface>().textUI.text = "";
+            Debug.Log(item.content);
+             GameObject _prefab;
+                _prefab = Instantiate(suggestionItemPrefab);
+                _prefab.transform.SetParent(gameObject.transform);
+                _prefab.GetComponent<TextInterface>().textUI.text = item.content;
+                _prefab.transform.localScale = new Vector3(1,1,1);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_prefab.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.GetComponent<RectTransform>());
         }
     }
 }
