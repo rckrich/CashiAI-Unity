@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ChatBoxLogic : MonoBehaviour
 {
-    [SerializeField] private GameObject messageContainer, messageAssistantPrefab, messageUserPrefab;
+    [SerializeField] private GameObject messageContainer, messageAssistantPrefab, messageUserPrefab, sidebarContainer;
     [SerializeField] private TMP_InputField textInput;
     [SerializeField] private OpenAiWebCalls openAi;
     [SerializeField] private SuggestionBox suggestionBox;
@@ -22,6 +22,10 @@ public class ChatBoxLogic : MonoBehaviour
     void Start()
     {
         Initialize();
+    }
+
+    public void Onclick_ToggleSidebar(){
+        sidebarContainer.SetActive(!sidebarContainer.activeSelf);
     }
 
     public void OnClick_Send(){

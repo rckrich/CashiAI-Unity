@@ -4915,7 +4915,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1390039703}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2119634769}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1390039703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5358,10 +5370,11 @@ MonoBehaviour:
     type: 3}
   messageUserPrefab: {fileID: 4860441277799169489, guid: 19fda0a5c78ff1448a20c6f8d7c10447,
     type: 3}
+  sidebarContainer: {fileID: 2119634769}
   textInput: {fileID: 169044448}
   openAi: {fileID: 1480392623}
   suggestionBox: {fileID: 1979730453}
-  reactController: {fileID: 0}
+  reactController: {fileID: 811690950}
 --- !u!1 &1549572426
 GameObject:
   m_ObjectHideFlags: 0
@@ -12770,7 +12783,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2115611904}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1542552970}
+        m_TargetAssemblyTypeName: ChatBoxLogic, Assembly-CSharp
+        m_MethodName: Onclick_ToggleSidebar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2115611904
 MonoBehaviour:
   m_ObjectHideFlags: 0

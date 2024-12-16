@@ -14,6 +14,12 @@ public class ReactController : MonoBehaviour
     [SerializeField] private RectTransform suggestionBox;
     private string userId = "";
 
+    void Awake () {
+#if UNITY_WEBGL == true && UNITY_EDITOR == false
+    WebGLInput.captureAllKeyboardInput = false;
+#endif
+  }
+
     void Start(){
         CommunicateToReact();
     }

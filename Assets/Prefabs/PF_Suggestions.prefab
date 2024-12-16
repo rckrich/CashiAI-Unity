@@ -86,6 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91febc2c72f500c4292503c9c615b548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _parent: {fileID: 0}
   textUI: {fileID: 4475627735973497900}
 --- !u!114 &2951196401040474592
 MonoBehaviour:
@@ -356,7 +357,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3986134721281928105}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4377983070970318418}
+        m_TargetAssemblyTypeName: TextInterface, Assembly-CSharp
+        m_MethodName: OnClickItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3126052991547893893
 MonoBehaviour:
   m_ObjectHideFlags: 0
