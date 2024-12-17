@@ -29,7 +29,7 @@ public class ReactController : MonoBehaviour
     }
 
     public void sendPost(){
-        if(userId == ""){
+        if(userId != ""){
             webInterface.PostConversationStarted(userId);
         }
     }
