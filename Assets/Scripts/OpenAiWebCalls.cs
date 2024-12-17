@@ -47,7 +47,7 @@ public class OpenAiWebCalls : MonoBehaviour
         public string role;
         public content[] content;
         public string created_at;
-        
+
     }
 
     [System.Serializable]
@@ -83,30 +83,29 @@ public class OpenAiWebCalls : MonoBehaviour
         public string status;
     }
 
-[System.Serializable]
+    [System.Serializable]
     private class MessagePayload
     {
         public string role;
         public string content;
     }
 
-[System.Serializable]
+    [System.Serializable]
     private class RunPayload
     {
         public string assistant_id;
         public string model;
     }
 
-[System.Serializable]
+    [System.Serializable]
     private class RunResponse
     {
         public string id;
     }
 
-     [SerializeField] private ChatBoxLogic chat;
+    [SerializeField] private ChatBoxLogic chat;
 
     private string open_ai_key = "";
-    private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
     public AudioSource audioSource;
     private AudioClip currentClip;
     public List<chatData> _test;
@@ -128,7 +127,7 @@ public class OpenAiWebCalls : MonoBehaviour
         request.downloadHandler = new DownloadHandlerBuffer();
 
         yield return request.SendWebRequest();
-        
+
         if (request.result == UnityWebRequest.Result.Success)
         {
             string responseText = request.downloadHandler.text;
@@ -147,7 +146,8 @@ public class OpenAiWebCalls : MonoBehaviour
 
     private IEnumerator SendMessageToThread(string newMessage)
     {
-        if(activeThread == ""){
+        if (activeThread == "")
+        {
             yield return StartCoroutine(CreateNewThread());
         }
         string url = $"https://api.openai.com/v1/threads/{activeThread}/messages";
@@ -238,22 +238,22 @@ public class OpenAiWebCalls : MonoBehaviour
                 {
                     if (string.IsNullOrEmpty(response.status))
                     {
-                        isRunning = false; 
+                        isRunning = false;
                     }
                     else if (response.status == "completed")
                     {
-                        isRunning = false; 
-                        StartCoroutine(FetchMessages()); 
+                        isRunning = false;
+                        StartCoroutine(FetchMessages());
                     }
                 }
             }
             else
             {
                 Debug.LogError("Error: " + request.error);
-                isRunning = false; 
+                isRunning = false;
             }
 
-            yield return new WaitForSeconds(3f); 
+            yield return new WaitForSeconds(3f);
         }
     }
 
@@ -278,7 +278,7 @@ public class OpenAiWebCalls : MonoBehaviour
             if (response != null && response.data != null && response.data.Length > 0)
             {
                 List<Message> messages = new List<Message>(response.data);
-                messages.Reverse(); 
+                messages.Reverse();
 
                 StartCoroutine(ProcessMessages(messages));
             }
@@ -289,7 +289,7 @@ public class OpenAiWebCalls : MonoBehaviour
         }
     }
 
-    private IEnumerator TextToSpeech(string speechText)
+    /*private IEnumerator TextToSpeech(string speechText)
     {
         UnityWebRequest request = new UnityWebRequest("https://api.openai.com/v1/audio/speech", "POST");
 
@@ -320,22 +320,57 @@ public class OpenAiWebCalls : MonoBehaviour
         {
             Debug.LogError("Error al generar el audio: " + request.error);
         }
+    }*/
+
+    private IEnumerator StreamAudioDirectly(string speechText)
+    {
+        UnityWebRequest request = new UnityWebRequest("https://api.openai.com/v1/audio/speech", "POST");
+
+        request.SetRequestHeader("Authorization", $"Bearer {open_ai_key}");
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        string jsonBody = JsonUtility.ToJson(new SpeechPayload
+        {
+            model = "tts-1",
+            input = speechText,
+            voice = "onyx"
+        });
+
+        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
+
+        request.downloadHandler = new DownloadHandlerAudioClip("", AudioType.MPEG);
+
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Audio recibido correctamente");
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+            yield return StartCoroutine(LoadAudio(clip));
+        }
+        else
+        {
+            Debug.LogError("Error al recibir el audio: " + request.error);
+        }
     }
 
-    IEnumerator ProcessMessages(List<Message> messages){
+    IEnumerator ProcessMessages(List<Message> messages)
+    {
         messageList = messages;
 
-        Dialogue[] textProcessed = ProcessJson(messageList[messageList.Count-1].content[0].text.value);
-        if (textProcessed.Length == 1){
-            yield return StartCoroutine(TextToSpeech(textProcessed[0].text));
+        Dialogue[] textProcessed = ProcessJson(messageList[messageList.Count - 1].content[0].text.value);
+        if (textProcessed.Length == 1)
+        {
+            yield return StartCoroutine(StreamAudioDirectly(textProcessed[0].text));
             chat.ChatEntryPointMessages(textProcessed[0].text);
             selectAnimationScript.OnRetrieveAnimation(textProcessed[0].animation);
             selectAnimationScript.ReatrieveEmote(textProcessed[0].facialExpression);
-        }else{
+        }
+        else
+        {
             for (int i = 0; i < textProcessed.Length; i++)
             {
                 Debug.Log(i);
-                yield return StartCoroutine(TextToSpeech(textProcessed[i].text));
+                yield return StartCoroutine(StreamAudioDirectly(textProcessed[i].text));
                 chat.ChatEntryPointMessages(textProcessed[i].text);
                 selectAnimationScript.OnRetrieveAnimation(textProcessed[i].animation);
                 selectAnimationScript.ReatrieveEmote(textProcessed[i].facialExpression);
@@ -347,9 +382,12 @@ public class OpenAiWebCalls : MonoBehaviour
 
     }
 
-    IEnumerator isAudioPlaying(){
-        while(true){
-            if(!audioSource.isPlaying){
+    IEnumerator isAudioPlaying()
+    {
+        while (true)
+        {
+            if (!audioSource.isPlaying)
+            {
                 break;
             }
             yield return new WaitForSeconds(0.1f);
@@ -357,35 +395,43 @@ public class OpenAiWebCalls : MonoBehaviour
         yield return null;
     }
 
-    public void CreateNewThreadInterface(){
+    public void CreateNewThreadInterface()
+    {
         StartCoroutine(CreateNewThread());
     }
 
-    public void SendMessageToThreadInterface(string _newMessage){
+    public void SendMessageToThreadInterface(string _newMessage)
+    {
         StartCoroutine(SendMessageToThread(_newMessage));
     }
 
-    public List<Message> FetchMessagesInterface(){
-        if(activeThread != ""){
+    public List<Message> FetchMessagesInterface()
+    {
+        if (activeThread != "")
+        {
             StartCoroutine(FetchMessages());
         }
         return messageList;
     }
 
-    private Dialogue[] ProcessJson(string jsonToProcess){
+    private Dialogue[] ProcessJson(string jsonToProcess)
+    {
         jsonToProcess = jsonToProcess.Trim();
-        Dialogue[] dialogues ;
-        try{
-            string[] Process1= jsonToProcess.Split("```");
-            string[] Process2= Process1[1].Split("json");
+        Dialogue[] dialogues;
+        try
+        {
+            string[] Process1 = jsonToProcess.Split("```");
+            string[] Process2 = Process1[1].Split("json");
             dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + Process2[1] + "}").dialogues;
-        }catch{
+        }
+        catch
+        {
             dialogues = JsonUtility.FromJson<DialogueList>("{\"dialogues\":" + jsonToProcess + "}").dialogues;
         }
         return dialogues;
     }
 
-    private IEnumerator LoadAudio(string audiopath)
+    /*private IEnumerator LoadAudio(string audiopath)
     {
         string pathWithPrefix = "file://" + audiopath;
         print("Audio path: " + pathWithPrefix);
@@ -406,7 +452,22 @@ public class OpenAiWebCalls : MonoBehaviour
                 Debug.LogError($"Error al cargar el audio desde {audiopath}: {www.error}");
             }
         }
+    }*/
+
+    private IEnumerator LoadAudio(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            Debug.Log("Audio recibido y cargado en memoria");
+            currentClip = clip;
+            audioSource.clip = currentClip;
+            audioSource.Play();
+        }
+        else
+        {
+            Debug.LogError("El AudioClip es nulo");
+        }
+
+        yield return null;
     }
 }
-
-
