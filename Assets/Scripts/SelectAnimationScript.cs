@@ -23,7 +23,6 @@ public class SelectAnimationScript : MonoBehaviour
                 break;
             case "Crying":
                 animator.SetTrigger("hasCrying");
-                emoter.ManualEmote("sad", ExpressionComponent.ExpressionHandler.RoundTrip);
                 break;
             case "Laughing":
                 animator.SetTrigger("hasLaughing");
@@ -46,4 +45,5 @@ public class SelectAnimationScript : MonoBehaviour
     {
         emoter.ManualEmote(emote, ExpressionComponent.ExpressionHandler.RoundTrip);
     }
+
 }
