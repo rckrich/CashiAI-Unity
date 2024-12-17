@@ -106,6 +106,7 @@ public class OpenAiWebCalls : MonoBehaviour
     [SerializeField] private ChatBoxLogic chat;
 
     private string open_ai_key = "";
+    private string assistant_id = "asst_f1JMDYqGUigh02vCutxfkRue";
     public AudioSource audioSource;
     private AudioClip currentClip;
     public List<chatData> _test;
