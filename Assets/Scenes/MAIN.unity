@@ -206,7 +206,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21.6
+  m_fontSize: 20.05
   m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6033,7 +6033,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10.55
+  m_fontSize: 6.55
   m_fontSizeBase: 0
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6095,6 +6095,7 @@ GameObject:
   - component: {fileID: 1912353178}
   - component: {fileID: 1912353177}
   - component: {fileID: 1912353176}
+  - component: {fileID: 1912353179}
   m_Layer: 5
   m_Name: SendButton
   m_TagString: Untagged
@@ -6216,6 +6217,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1912353174}
   m_CullTransparentMesh: 1
+--- !u!114 &1912353179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912353174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34fac6b3618b9b40b530ab9d4e5d499, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sendButton: {fileID: 1912353176}
 --- !u!1 &1979730451
 GameObject:
   m_ObjectHideFlags: 0
