@@ -345,8 +345,8 @@ public class OpenAiWebCalls : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Audio recibido correctamente");
-            AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-            yield return StartCoroutine(LoadAudio(clip));
+            currentClip = DownloadHandlerAudioClip.GetContent(request);
+            yield return StartCoroutine(LoadAudio(currentClip));
         }
         else
         {

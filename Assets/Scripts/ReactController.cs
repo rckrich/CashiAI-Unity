@@ -12,7 +12,7 @@ public class ReactController : MonoBehaviour
     [SerializeField] private WebCalls webInterface;
     [SerializeField] private RectTransform chatContainer;
     [SerializeField] private RectTransform suggestionBox;
-    private string userId = "";
+    private int userId = 15;
 
     void Awake () {
 #if UNITY_WEBGL == true && UNITY_EDITOR == false
@@ -24,12 +24,12 @@ public class ReactController : MonoBehaviour
         CommunicateToReact();
     }
 
-    public void reactWebCall(string id){
+    public void reactWebCall(int id){
         userId = id;
     }
 
     public void sendPost(){
-        if(userId != ""){
+        if(userId != 0){
             webInterface.PostConversationStarted(userId);
         }
     }
