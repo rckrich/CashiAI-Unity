@@ -126,7 +126,7 @@ public class OpenAiWebCalls : MonoBehaviour
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes("{}");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
-
+        
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -340,13 +340,13 @@ public class OpenAiWebCalls : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
 
         request.downloadHandler = new DownloadHandlerAudioClip("", AudioType.MPEG);
-
+        
         yield return request.SendWebRequest();
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Audio recibido correctamente");
             currentClip = DownloadHandlerAudioClip.GetContent(request);
-            yield return StartCoroutine(LoadAudio(currentClip));
+            
         }
         else
         {
@@ -375,8 +375,19 @@ public class OpenAiWebCalls : MonoBehaviour
                 chat.ChatEntryPointMessages(textProcessed[i].text);
                 selectAnimationScript.OnRetrieveAnimation(textProcessed[i].animation);
                 selectAnimationScript.ReatrieveEmote(textProcessed[i].facialExpression);
-                Debug.Log(currentClip.length);
-                yield return new WaitForSeconds(currentClip.length);
+                
+                audioSource.clip = currentClip;
+                audioSource.Play();
+                
+                while (true)
+                {
+                    if (!audioSource.isPlaying)
+                    {
+                        break;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                }
+                
             }
         }
 
