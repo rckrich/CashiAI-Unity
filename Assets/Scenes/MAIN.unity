@@ -5099,6 +5099,7 @@ MonoBehaviour:
   activeThread: 
   selectAnimationScript: {fileID: 2109638307}
   messageList: []
+  animator: {fileID: 2109638316}
 --- !u!1 &1504342874
 GameObject:
   m_ObjectHideFlags: 0
@@ -12216,10 +12217,10 @@ MonoBehaviour:
   randomHoldDurationMax: 0.5
   configReady: 1
   warnOnNullRefs: 1
-  inspSalsaLinked: 1
+  inspSalsaLinked: 0
   inspStateFoldoutProcessing: 0
   inspStateFoldoutSettings: 0
-  inspStateFoldoutEmotes: 1
+  inspStateFoldoutEmotes: 0
   inspCollectionDisplayMode: 0
 --- !u!114 &2109638313
 MonoBehaviour:

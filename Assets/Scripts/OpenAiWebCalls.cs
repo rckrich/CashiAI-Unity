@@ -113,7 +113,7 @@ public class OpenAiWebCalls : MonoBehaviour
     public string activeThread = "";
     public SelectAnimationScript selectAnimationScript;
     public List<Message> messageList = new List<Message>();
-
+    public Animator animator;
     private IEnumerator CreateNewThread()
     {
         string url = "https://api.openai.com/v1/threads";
@@ -400,6 +400,7 @@ public class OpenAiWebCalls : MonoBehaviour
         {
             if (!audioSource.isPlaying)
             {
+                animator.SetTrigger("hasIdle");
                 break;
             }
             yield return new WaitForSeconds(0.1f);
