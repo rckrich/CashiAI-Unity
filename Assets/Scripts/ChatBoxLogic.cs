@@ -29,6 +29,9 @@ public class ChatBoxLogic : MonoBehaviour
     }
 
     public void OnClick_Send(){
+        if(textInput.text == "" || textInput.text == " "){
+            return;
+        }
         suggestionBox.HideSuggestionBox();
         openAi.SendMessageToThreadInterface(textInput.text);
         CreateUserMessage(textInput.text);
